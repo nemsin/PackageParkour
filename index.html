@@ -14,6 +14,8 @@
 
         var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         var player;
+        var package;
+        var pickedUp = false;
         var courser;
         var grounds;
 
@@ -25,6 +27,7 @@
             game.load.image('ground', 'assets/ground.png');
 
             game.load.image('player', 'assets/player.png');
+            game.load.image('package', 'assets/package.png');
         }
 
         function create ()
@@ -46,6 +49,7 @@
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             player = game.add.sprite(0, 500, 'player');
+            package = game.add.sprite(20, 500, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -54,13 +58,20 @@
             player.body.bounce.setTo(0.25, 0.25);
             player.body.gravity.y = 500;
 
+            game.physics.enable(package, Phaser.Physics.ARCADE);
+            package.enableBody = true;
+            package.body.collideWorldBounds = true;
+            package.body.bounce.setTo(0.5, 0.3);
+            package.body.gravity.y = 500;
+
             game.camera.follow(player);
         }
 
         function update ()
         {
             var collision = game.physics.arcade.collide(player, grounds);
-
+            var packCol = game.physics.arcade.collide(player, package);
+            game.physics.arcade.collide(package, grounds);
 
             //Player Movement
             player.body.move = false;
@@ -71,10 +82,13 @@
             else
                 player.body.velocity.x = 0;
 
-            if (courser.up.isDown && player.body.touching.down && collision)
+            if (courser.up.isDown && player.body.touching.down && (collision || packCol))
                 player.body.velocity.y = -250;
 
-            console.log(player.body.velocity.y);
+            if (package.body.velocity.x < 0)
+                package.body.velocity.x += 2;
+            else if (package.body.velocity.x > 0)
+                package.body.velocity.x -= 2;
         }
 
     };
