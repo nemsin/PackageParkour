@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Gamename</title>
-        <script src="/phaser-ce/build/phaser.js"></script>
+        <title>PackageParkour</title>
+        <script src="node_modules/phaser-ce/build/phaser.js"></script>
     </head>
     <body>
 
@@ -12,23 +12,134 @@
     window.onload = function() {
 
         var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var player;
+        var courser;
+        var pVelX = 0;
+        var pVelY = 0;
+
 
         function preload ()
         {
             //Background
-            game.load.image('skybox', '/ggj/assets/skybox.png');
-            game.load.image('ground', '/ggj/assets/ground.png');
+            game.load.image('skybox', 'assets/skybox.png');
+            game.load.image('ground', 'assets/ground.png');
+
+            game.load.image('player', 'assets/player.png');
+
+
         }
 
         function create ()
         {
+            //add sprites
             game.add.sprite(0, 0, 'skybox');
             game.add.sprite(0, 550, 'ground');
+
+            //Physics init
+            player = game.add.sprite(100, 500, 'player');
+            courser = game.input.keyboard.createCursorKeys();
+        }
+
+        function update () {
+            //Player Movement
+            if (courser.left.isDown)
+                pVelX = -3;
+            else if (courser.right.isDown)
+                pVelX = 3;
+            else if (courser.up.isDown && player.y == 500)
+                pVelY = -5;
+            else
+            {
+                pVelX = 0;
+            }
+
+            move();
+            console.log(pVelY);
+        }
+
+        function move()
+        {
+            player.x += pVelX;
+
+            if (player.y < 500)
+            {
+                pVelY = 0;
+                player.y = 500;
+            }
+            pVelY += 0.25;
+            player.y += pVelY;
+        }
+
+    };
+
+    </script>
+
+    </body>
+</html>
+
+<!--
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Gamename</title>
+
+        <script src="node_modules/phaser-ce/build/phaser.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+
+        var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var player;
+        var courser;
+
+
+        function preload ()
+        {
+            //Background
+            game.load.image('skybox', 'assets/skybox.png');
+            game.load.image('ground', 'assets/ground.png');
+
+            game.load.image('player', 'assets/player.png');
+
+
+        }
+
+        function create ()
+        {
+            //Physics init
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+
+            player = game.add.sprite(0, 500, 'player');
+            courser = game.input.keyboard.createCursorKeys();
+
+            game.physics.enable(player, Phaser.Physics.ARCADE);
+            player.enableBody = true;
+            player.body.collideWorldBounds = true;
+            player.body.bounce.setTo(0.8, 0.8);
+
+            //add sprites
+            game.add.sprite(0, 0, 'skybox');
+            game.add.sprite(0, 550, 'ground');
+
         }
 
         function update ()
         {
-
+            //Player Movement
+            player.body.move = false;
+            if (courser.left.onDown)
+                player.body.velocity.x = -1;
+            else if (courser.right.onDown)
+                player.body.velocity.x = 1;
+            else
+            {
+                player.body.velocity.x = 0;
+                player.body.velocity.y = 0;
+            }
         }
 
     };
