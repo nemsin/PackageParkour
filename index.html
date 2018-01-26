@@ -12,7 +12,7 @@
 
     window.onload = function() {
 
-        var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         var player;
         var courser;
         var grounds;
@@ -29,12 +29,17 @@
 
         function create ()
         {
+            // create world bounds
+            game.world.setBounds(0, 0, 2500, 600);
+
             //add sprites
-            game.add.sprite(0, 0, 'skybox');
+            var skybox = game.add.sprite(0, 0, 'skybox');
+            skybox.scale.setTo(2.5, 1);
 
             grounds = game.add.group();
             grounds.enableBody = true;
             var ground = grounds.create(0, 550, 'ground');
+            ground.scale.setTo(2.5, 1);
             ground.body.immovable = true;
 
             //Physics init
@@ -48,6 +53,8 @@
             player.body.collideWorldBounds = true;
             player.body.bounce.setTo(0.25, 0.25);
             player.body.gravity.y = 500;
+
+            game.camera.follow(player);
         }
 
         function update ()
