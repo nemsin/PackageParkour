@@ -27,7 +27,7 @@
         var grounds;
         var levers = [];
         var plates = [];
-        var obstacles = [];
+        var steps = [];
 
     window.onload = function() {
 
@@ -262,8 +262,8 @@
                     buildWorld0();
             }
 
-            for (var i = 0; i < obstacles.length; i++)
-                obstacles[i][0].body.immovable = true;
+            for (var i = 0; i < steps.length; i++)
+                steps[i][0].body.immovable = true;
 
             for (var i = 0; i < levers.length; i++)
                 game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
