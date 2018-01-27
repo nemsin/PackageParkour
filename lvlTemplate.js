@@ -21,7 +21,7 @@ function buildWorld0()
     obstacles[0][0].scale.setTo(1, 1.5);
 
     // Finish
-    finish = game.add.sprite(1000, 400, 'finish');
+    finish = game.add.sprite(1000, 450, 'finish');
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
