@@ -12,10 +12,17 @@
 
     window.onload = function() {
 
-        var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         var player;
+        var package;
+        var pickedUp = false;
         var courser;
+        var triggerIndex;
+
+        // Groups
         var grounds;
+        var levers = [];
+        var plates = [];
 
 
         function preload ()
@@ -24,23 +31,44 @@
             game.load.image('skybox', 'assets/skybox.png');
             game.load.image('ground', 'assets/ground.png');
 
+            // Triggers
+            game.load.image('lever', 'assets/lever.png');
+            game.load.image('plate', 'assets/plate.png');
+
+            // Moveable
             game.load.image('player', 'assets/player.png');
+            game.load.image('package', 'assets/package.png');
         }
 
         function create ()
         {
+            // create world bounds
+            game.world.setBounds(0, 0, 2500, 600);
+
             //add sprites
-            game.add.sprite(0, 0, 'skybox');
+            var skybox = game.add.sprite(0, 0, 'skybox');
+            skybox.scale.setTo(2.5, 1);
 
             grounds = game.add.group();
             grounds.enableBody = true;
             var ground = grounds.create(0, 550, 'ground');
+            ground.scale.setTo(2.5, 1);
             ground.body.immovable = true;
+
+            // Triggers
+            levers[0] = [];
+            levers[0][0] = game.add.sprite(100, 510, 'lever');
+            levers[0][1] = false;
+
+            plates[0] = [];
+            plates[0][0] = game.add.sprite(200, 545, 'plate');
+            plates[0][1] = false;
 
             //Physics init
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             player = game.add.sprite(0, 500, 'player');
+            package = game.add.sprite(20, 500, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -48,26 +76,93 @@
             player.body.collideWorldBounds = true;
             player.body.bounce.setTo(0.25, 0.25);
             player.body.gravity.y = 500;
+
+            game.physics.enable(package, Phaser.Physics.ARCADE);
+            package.enableBody = true;
+            package.body.collideWorldBounds = true;
+            package.body.bounce.setTo(1, 0.1);
+            package.body.gravity.y = 500;
+
+            for (var i = 0; i < levers.length; i++)
+                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
+
+            for (var i = 0; i < plates.length; i++)
+                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
+
+
+            game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+
+            game.camera.follow(player);
         }
 
         function update ()
         {
             var collision = game.physics.arcade.collide(player, grounds);
-
+            var packCol = game.physics.arcade.collide(player, package);
+            var packCol2 = game.physics.arcade.collide(package, grounds);
 
             //Player Movement
             player.body.move = false;
             if (courser.left.isDown)
-                player.body.velocity.x = -150;
+                player.body.velocity.x = -100;
             else if (courser.right.isDown)
-                player.body.velocity.x = 150;
+                player.body.velocity.x = 100;
             else
                 player.body.velocity.x = 0;
 
-            if (courser.up.isDown && player.body.touching.down && collision)
+            // player jumping
+            if (courser.up.isDown && player.body.touching.down && (collision || packCol))
                 player.body.velocity.y = -250;
 
-            console.log(player.body.velocity.y);
+            // package slowing down on ground
+            if (package.body.velocity.x < 0  && package.body.touching.down && packCol2)
+                package.body.velocity.x += 2.5;
+            else if (package.body.velocity.x > 0  && package.body.touching.down && packCol2)
+                package.body.velocity.x -= 2.5;
+
+            // package throw
+            if (Phaser.Math.distance(player.x, player.y, package.x, package.y) <= 42 && player.body.touching.down && collision && !packCol && game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+            {
+                var mod;
+                if (player.x - package.x > 0)
+                    mod = -1;
+                else
+                    mod = 1;
+
+                package.body.velocity.x = mod * 150;
+                package.body.velocity.y = -300;
+            }
+
+            // Triggers
+            for (var i = 0; i < levers.length; i++)
+            {
+                triggerIndex = i;
+                game.physics.arcade.overlap(levers[i][0], player, leverHandler, null, this);
+            }
+
+            for (var i = 0; i < plates.length; i++)
+            {
+                triggerIndex = i;
+                game.physics.arcade.overlap(plates[i][0], package, plateHandler, null, this);
+            }
+        }
+
+        function leverHandler()
+        {
+            if (!levers[triggerIndex][1])
+            {
+                levers[triggerIndex][1] = true;
+                console.log("Lever " + triggerIndex);
+            }
+        }
+
+        function plateHandler()
+        {
+            if (!plates[triggerIndex][1])
+            {
+                plates[triggerIndex][1] = true;
+                console.log("Plate " + triggerIndex);
+            }
         }
 
     };
