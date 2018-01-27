@@ -17,6 +17,7 @@
         var package;
         var pickedUp = false;
         var courser;
+        var triggerIndex;
 
         // Groups
         var grounds;
@@ -82,6 +83,13 @@
             package.body.bounce.setTo(1, 0.1);
             package.body.gravity.y = 500;
 
+            for (var i = 0; i < levers.length; i++)
+                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
+
+            for (var i = 0; i < plates.length; i++)
+                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
+
+
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 
             game.camera.follow(player);
@@ -127,6 +135,34 @@
 
             // Triggers
             for (var i = 0; i < levers.length; i++)
+            {
+                triggerIndex = i;
+                game.physics.arcade.overlap(levers[i][0], player, leverHandler, null, this);
+            }
+
+            for (var i = 0; i < plates.length; i++)
+            {
+                triggerIndex = i;
+                game.physics.arcade.overlap(plates[i][0], package, plateHandler, null, this);
+            }
+        }
+
+        function leverHandler()
+        {
+            if (!levers[triggerIndex][1])
+            {
+                levers[triggerIndex][1] = true;
+                console.log("Lever " + triggerIndex);
+            }
+        }
+
+        function plateHandler()
+        {
+            if (!plates[triggerIndex][1])
+            {
+                plates[triggerIndex][1] = true;
+                console.log("Plate " + triggerIndex);
+            }
         }
 
     };
