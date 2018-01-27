@@ -7,11 +7,11 @@
         <script src="node_modules/phaser-ce/build/phaser.js"></script>
 
         <!-- Levels -->
-        <script src="lvlTemplate.js"></script>
+        <script src="level/level0.js"></script>
     </head>
     <body>
 
-    <script type="text/javascript">
+    <script>
 
         var game;
         var triggerIndex;
@@ -81,6 +81,7 @@
             var ground = grounds.create(0, 550, 'ground');
             ground.body.immovable = true;
 
+            build();
 
             player = game.add.sprite(0, 0, 'player');
             player.animations.add('walkLeft', [0, 1], 10, true);
@@ -101,8 +102,6 @@
             package.body.collideWorldBounds = true;
             package.body.bounce.setTo(1, 0.1);
             package.body.gravity.y = 500;
-
-            build();
 
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.R ]);
