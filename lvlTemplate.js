@@ -61,3 +61,8 @@ function liftObstacle()
             }
     }
 }
+
+function lvlFinished()
+{
+
+}
