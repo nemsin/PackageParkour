@@ -40,6 +40,7 @@
 
         var courser;
         var rain;
+        var leftOrRightWalk = true //true == right
 
         function preload ()
         {
@@ -53,7 +54,7 @@
             game.load.image('finish', 'assets/finish.png');
 
             // Moveable
-            game.load.image('player', 'assets/PlayerRight.png');
+            game.load.spritesheet('player', 'assets/player_animation/PlayerCombined.png', 16, 35);
             game.load.image('package', 'assets/package.png');
 
             // Rain
@@ -82,7 +83,11 @@
 
 
             player = game.add.sprite(0, 0, 'player');
-            package = game.add.sprite(20, 0, 'package');
+            player.animations.add('walkLeft', [0, 1], 10, true);
+            player.animations.add('walkRight', [4, 5], 10, true);
+            player.animations.add('standLeft', [2], 10, true);
+            player.animations.add('standRight', [3], 10, true);
+            package = game.add.sprite(50, 0, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -113,6 +118,8 @@
                 build();
             }
 
+
+
             var collision = game.physics.arcade.collide(player, grounds);
             var packCol = game.physics.arcade.collide(player, package);
             var packCol2 = game.physics.arcade.collide(package, grounds);
@@ -120,11 +127,30 @@
             //Player Movement
             player.body.move = false;
             if (courser.left.isDown)
+            {
                 player.body.velocity.x = -100;
+                player.animations.play('walkLeft');
+                leftOrRightWalk = false;
+            }
             else if (courser.right.isDown)
+            {
                 player.body.velocity.x = 100;
-            else
+                player.animations.play('walkRight');
+                leftOrRightWalk = true;
+            }
+            else if (leftOrRightWalk)
+            {
+                player.animations.play('standRight');
                 player.body.velocity.x = 0;
+            }
+            else if (!leftOrRightWalk)
+            {
+                player.animations.play('standLeft');
+                player.body.velocity.x = 0;
+            }
+
+
+
 
             // player jumping
             if (courser.up.isDown && player.body.touching.down && (collision || packCol))

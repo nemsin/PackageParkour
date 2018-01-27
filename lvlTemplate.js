@@ -73,8 +73,10 @@ function finishHandler0()
     levers[0][0].destroy();
     player.x = 0;
     player.y = 0;
+    player.body.velocity.x = 0;
     package.x = 20;
     package.y = 0;
+    package.body.velocity.x = 0;
     didLoad = false;
 }
 
@@ -89,6 +91,8 @@ function reset0()
 
     player.x = 0;
     player.y = 0;
+    player.body.velocity.x = 0;
     package.x = 20;
     package.y = 0;
+    package.body.velocity.x = 0;
 }
