@@ -1,4 +1,4 @@
-function buildWorld()
+function buildWorld0()
 {
     // Triggers
     levers[0] = [];
@@ -9,21 +9,24 @@ function buildWorld()
     //plates[0][0] = game.add.sprite(200, 545, 'plate');
     //plates[0][1] = false;
 
-    // Ground Test
-    obstacles[0] = []
-    obstacles[0][0] = grounds.create(300, 475, 'ground');
-    obstacles[0][0].scale.setTo(1, 1.5);
-
     //liftable obstacles require physics!!
     obstacles[1] = [];
     obstacles[1][0] = grounds.create(250, 550, 'ground');
-    obstacles[1][0].scale.setTo(0.1, 1);
+    //obstacles[1][0].scale.setTo(0.1, 1);
     game.physics.enable(obstacles[1][0], Phaser.Physics.ARCADE);
+
+    // Ground Test
+    obstacles[0] = [];
+    obstacles[0][0] = grounds.create(300, 475, 'ground');
+    obstacles[0][0].scale.setTo(1, 1.5);
+
+    // Finish
+    finish = game.add.sprite(1000, 400, 'finish');
+    game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
-function leverHandler()
+function leverHandler0()
 {
-    console.log("1");
     if (!levers[triggerIndex][1])
     {
         levers[triggerIndex][1] = true;
@@ -36,7 +39,7 @@ function leverHandler()
     }
 }
 
-function plateHandler()
+function plateHandler0()
 {
     if (!plates[triggerIndex][1])
     {
@@ -49,7 +52,7 @@ function plateHandler()
     }
 }
 
-function liftObstacle()
+function liftObstacle0()
 {
     for (var i = 0; i < obstacles.length; i++)
     {
@@ -62,7 +65,30 @@ function liftObstacle()
     }
 }
 
-function lvlFinished()
+function finishHandler0()
 {
+    level = 0;
+    obstacles[0][0].destroy();
+    obstacles[1][0].destroy();
+    levers[0][0].destroy();
+    player.x = 0;
+    player.y = 0;
+    package.x = 20;
+    package.y = 0;
+    didLoad = false;
+}
 
+function reset0()
+{
+    obstacles[1][0].x = 250;
+    obstacles[1][0].y = 550;
+    obstacles[1][0].body.velocity.y = 0;
+    obstacles[1][1] = null;
+
+    levers[0][1] = false;
+
+    player.x = 0;
+    player.y = 0;
+    package.x = 20;
+    package.y = 0;
 }

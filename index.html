@@ -15,6 +15,12 @@
 
         var game;
         var triggerIndex;
+        var hasFinished = true;
+        var level = 0;
+        var player;
+        var package;
+        var finish;
+        var didLoad = true;
 
         // Groups
         var grounds;
@@ -27,13 +33,11 @@
         game = new Phaser.Game(
             1200,
             600,
-            Phaser.AUTO,
+            Phaser.CANVAS,
             '',
             { preload: preload, create: create, update: update, render: render }
         );
 
-        var player;
-        var package;
         var courser;
         var rain;
 
@@ -46,9 +50,10 @@
             // Triggers
             game.load.image('lever', 'assets/lever.png');
             game.load.image('plate', 'assets/plate.png');
+            game.load.image('finish', 'assets/finish.png');
 
             // Moveable
-            game.load.image('player', 'assets/player.png');
+            game.load.image('player', 'assets/PlayerRight.png');
             game.load.image('package', 'assets/package.png');
 
             // Rain
@@ -71,13 +76,13 @@
             // Ground
             grounds = game.add.group();
             grounds.enableBody = true;
-            buildWorld();
+
             var ground = grounds.create(0, 550, 'ground');
             ground.body.immovable = true;
 
 
-            player = game.add.sprite(0, 500, 'player');
-            package = game.add.sprite(20, 500, 'package');
+            player = game.add.sprite(0, 0, 'player');
+            package = game.add.sprite(20, 0, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -92,15 +97,7 @@
             package.body.bounce.setTo(1, 0.1);
             package.body.gravity.y = 500;
 
-            for (var i = 0; i < obstacles.length; i++)
-                obstacles[i][0].body.immovable = true;
-
-            for (var i = 0; i < levers.length; i++)
-                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
-
-            for (var i = 0; i < plates.length; i++)
-                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
-
+            build();
 
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.R ]);
@@ -110,6 +107,12 @@
         //-------------------------------------------------------------------------------------
         function update ()
         {
+            if (!didLoad)
+            {
+                didLoad = true;
+                build();
+            }
+
             var collision = game.physics.arcade.collide(player, grounds);
             var packCol = game.physics.arcade.collide(player, package);
             var packCol2 = game.physics.arcade.collide(package, grounds);
@@ -153,22 +156,49 @@
             for (var i = 0; i < levers.length; i++)
             {
                 triggerIndex = i;
-                game.physics.arcade.overlap(levers[i][0], player, leverHandler, null, this);
+                switch (level)
+                {
+                    case 0:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                }
+
             }
 
             for (var i = 0; i < plates.length; i++)
             {
                 triggerIndex = i;
-                game.physics.arcade.overlap(plates[i][0], package, plateHandler, null, this);
+                switch (level)
+                {
+                    case 0:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                }
+
             }
 
-            liftObstacle();
+            switch (level)
+            {
+                case 0:
+                    liftObstacle0();
+            }
+
 
             // Reset
             if (game.input.keyboard.isDown(Phaser.Keyboard.R))
-                lvlFinished();
+            {
+                switch (level)
+                {
+                    case 0:
+                        reset0();
+                }
+            }
+
 
             // Completion Detection
+            switch (level)
+            {
+                case 0:
+                    game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+            }
 
         }
 
@@ -196,10 +226,24 @@
         {
             if (drop.y > game.height)
                 rain.remove(drop, true);
-            else if (drop.x > game.width)
-                rain.remove(drop, true);
-            else if (drop.x < 0)
-                rain.remove(drop, true);
+        }
+
+        function build()
+        {
+            switch (level)
+            {
+                case 0:
+                    buildWorld0();
+            }
+
+            for (var i = 0; i < obstacles.length; i++)
+                obstacles[i][0].body.immovable = true;
+
+            for (var i = 0; i < levers.length; i++)
+                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
+
+            for (var i = 0; i < plates.length; i++)
+                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
         }
 
     };
