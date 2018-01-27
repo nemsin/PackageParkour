@@ -2,28 +2,45 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Gamename</title>
+        <title>Package Parkour</title>
 
         <script src="node_modules/phaser-ce/build/phaser.js"></script>
+
+        <!-- Levels -->
+        <script src="lvlTemplate.js"></script>
     </head>
     <body>
 
     <script type="text/javascript">
 
-    window.onload = function() {
-
-        var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var game;
+        var triggerIndex;
+        var hasFinished = true;
+        var level = 0;
         var player;
         var package;
-        var pickedUp = false;
-        var courser;
-        var triggerIndex;
+        var finish;
+        var didLoad = true;
 
         // Groups
         var grounds;
         var levers = [];
         var plates = [];
+        var obstacles = [];
 
+    window.onload = function() {
+
+        game = new Phaser.Game(
+            1200,
+            600,
+            Phaser.CANVAS,
+            '',
+            { preload: preload, create: create, update: update, render: render }
+        );
+
+        var courser;
+        var rain;
+        var leftOrRightWalk = true //true == right
 
         function preload ()
         {
@@ -34,41 +51,43 @@
             // Triggers
             game.load.image('lever', 'assets/lever.png');
             game.load.image('plate', 'assets/plate.png');
+            game.load.image('finish', 'assets/finish.png');
 
             // Moveable
-            game.load.image('player', 'assets/player.png');
+            game.load.spritesheet('player', 'assets/player_animation/PlayerCombined.png', 16, 35);
             game.load.image('package', 'assets/package.png');
+
+            // Rain
+            game.load.image('rain', 'assets/rain.png');
         }
 
         function create ()
         {
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+
             // create world bounds
             game.world.setBounds(0, 0, 2500, 600);
 
-            //add sprites
+            // Sky
             var skybox = game.add.sprite(0, 0, 'skybox');
-            skybox.scale.setTo(2.5, 1);
 
+            // Rain
+            rain();
+
+            // Ground
             grounds = game.add.group();
             grounds.enableBody = true;
+
             var ground = grounds.create(0, 550, 'ground');
-            ground.scale.setTo(2.5, 1);
             ground.body.immovable = true;
 
-            // Triggers
-            levers[0] = [];
-            levers[0][0] = game.add.sprite(100, 510, 'lever');
-            levers[0][1] = false;
 
-            plates[0] = [];
-            plates[0][0] = game.add.sprite(200, 545, 'plate');
-            plates[0][1] = false;
-
-            //Physics init
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-
-            player = game.add.sprite(0, 500, 'player');
-            package = game.add.sprite(20, 500, 'package');
+            player = game.add.sprite(0, 0, 'player');
+            player.animations.add('walkLeft', [0, 1], 10, true);
+            player.animations.add('walkRight', [4, 5], 10, true);
+            player.animations.add('standLeft', [2], 10, true);
+            player.animations.add('standRight', [3], 10, true);
+            package = game.add.sprite(50, 0, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -83,20 +102,24 @@
             package.body.bounce.setTo(1, 0.1);
             package.body.gravity.y = 500;
 
-            for (var i = 0; i < levers.length; i++)
-                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
-
-            for (var i = 0; i < plates.length; i++)
-                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
-
+            build();
 
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+            game.input.keyboard.addKeyCapture([ Phaser.Keyboard.R ]);
 
             game.camera.follow(player);
         }
-
+        //-------------------------------------------------------------------------------------
         function update ()
         {
+            if (!didLoad)
+            {
+                didLoad = true;
+                build();
+            }
+
+
+
             var collision = game.physics.arcade.collide(player, grounds);
             var packCol = game.physics.arcade.collide(player, package);
             var packCol2 = game.physics.arcade.collide(package, grounds);
@@ -104,11 +127,30 @@
             //Player Movement
             player.body.move = false;
             if (courser.left.isDown)
+            {
                 player.body.velocity.x = -100;
+                player.animations.play('walkLeft');
+                leftOrRightWalk = false;
+            }
             else if (courser.right.isDown)
+            {
                 player.body.velocity.x = 100;
-            else
+                player.animations.play('walkRight');
+                leftOrRightWalk = true;
+            }
+            else if (leftOrRightWalk)
+            {
+                player.animations.play('standRight');
                 player.body.velocity.x = 0;
+            }
+            else if (!leftOrRightWalk)
+            {
+                player.animations.play('standLeft');
+                player.body.velocity.x = 0;
+            }
+
+
+
 
             // player jumping
             if (courser.up.isDown && player.body.touching.down && (collision || packCol))
@@ -133,36 +175,101 @@
                 package.body.velocity.y = -300;
             }
 
+            // Rain
+            rain.forEach(checkRain, this, true);
+
             // Triggers
             for (var i = 0; i < levers.length; i++)
             {
                 triggerIndex = i;
-                game.physics.arcade.overlap(levers[i][0], player, leverHandler, null, this);
+                switch (level)
+                {
+                    case 0:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                }
+
             }
 
             for (var i = 0; i < plates.length; i++)
             {
                 triggerIndex = i;
-                game.physics.arcade.overlap(plates[i][0], package, plateHandler, null, this);
+                switch (level)
+                {
+                    case 0:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                }
+
             }
+
+            switch (level)
+            {
+                case 0:
+                    liftObstacle0();
+            }
+
+
+            // Reset
+            if (game.input.keyboard.isDown(Phaser.Keyboard.R))
+            {
+                switch (level)
+                {
+                    case 0:
+                        reset0();
+                }
+            }
+
+
+            // Completion Detection
+            switch (level)
+            {
+                case 0:
+                    game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+            }
+
         }
 
-        function leverHandler()
+        function render()
         {
-            if (!levers[triggerIndex][1])
-            {
-                levers[triggerIndex][1] = true;
-                console.log("Lever " + triggerIndex);
-            }
+            game.debug.text("Press 'R' to restart", 32, 32);
         }
 
-        function plateHandler()
+        function rain()
         {
-            if (!plates[triggerIndex][1])
+            rain = game.add.group();
+            game.time.events.loop(50, createSprite, this);
+        }
+
+        function createSprite()
+        {
+            var drop = rain.create(game.world.randomX, 0, 'rain');
+            game.physics.enable(drop, Phaser.Physics.ARCADE);
+            drop.enableBody = true;
+            drop.body.velocity.y = 300;
+            drop.body.velocity.x = -25;
+        }
+
+        function checkRain(drop)
+        {
+            if (drop.y > game.height)
+                rain.remove(drop, true);
+        }
+
+        function build()
+        {
+            switch (level)
             {
-                plates[triggerIndex][1] = true;
-                console.log("Plate " + triggerIndex);
+                case 0:
+                    buildWorld0();
             }
+
+            for (var i = 0; i < obstacles.length; i++)
+                obstacles[i][0].body.immovable = true;
+
+            for (var i = 0; i < levers.length; i++)
+                game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
+
+            for (var i = 0; i < plates.length; i++)
+                game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
         }
 
     };
