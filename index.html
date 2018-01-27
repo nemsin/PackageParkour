@@ -17,7 +17,11 @@
         var package;
         var pickedUp = false;
         var courser;
+
+        // Groups
         var grounds;
+        var levers = [];
+        var plates = [];
 
 
         function preload ()
@@ -26,6 +30,11 @@
             game.load.image('skybox', 'assets/skybox.png');
             game.load.image('ground', 'assets/ground.png');
 
+            // Triggers
+            game.load.image('lever', 'assets/lever.png');
+            game.load.image('plate', 'assets/plate.png');
+
+            // Moveable
             game.load.image('player', 'assets/player.png');
             game.load.image('package', 'assets/package.png');
         }
@@ -44,6 +53,15 @@
             var ground = grounds.create(0, 550, 'ground');
             ground.scale.setTo(2.5, 1);
             ground.body.immovable = true;
+
+            // Triggers
+            levers[0] = [];
+            levers[0][0] = game.add.sprite(100, 510, 'lever');
+            levers[0][1] = false;
+
+            plates[0] = [];
+            plates[0][0] = game.add.sprite(200, 545, 'plate');
+            plates[0][1] = false;
 
             //Physics init
             game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -106,6 +124,9 @@
                 package.body.velocity.x = mod * 150;
                 package.body.velocity.y = -300;
             }
+
+            // Triggers
+            for (var i = 0; i < levers.length; i++)
         }
 
     };
