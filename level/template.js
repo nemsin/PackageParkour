@@ -1,4 +1,4 @@
-function buildWorld0()
+function buildWorld()
 {
     // Triggers
     levers[0] = [];
@@ -25,7 +25,7 @@ function buildWorld0()
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
-function leverHandler0()
+function leverHandler()
 {
     if (!levers[triggerIndex][1])
     {
@@ -39,7 +39,7 @@ function leverHandler0()
     }
 }
 
-function plateHandler0()
+function plateHandler()
 {
     if (!plates[triggerIndex][1])
     {
@@ -52,7 +52,7 @@ function plateHandler0()
     }
 }
 
-function liftObstacle0()
+function liftObstacle()
 {
     for (var i = 0; i < obstacles.length; i++)
     {
@@ -65,7 +65,7 @@ function liftObstacle0()
     }
 }
 
-function finishHandler0()
+function finishHandler()
 {
     level = 0;
     obstacles[0][0].destroy();
@@ -80,8 +80,9 @@ function finishHandler0()
     didLoad = false;
 }
 
-function reset0()
+function reset()
 {
+    // Reset moveable
     obstacles[1][0].x = 250;
     obstacles[1][0].y = 550;
     obstacles[1][0].body.velocity.y = 0;
