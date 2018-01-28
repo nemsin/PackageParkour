@@ -9,28 +9,26 @@
 
         <!-- Levels -->
         <script src="level/level0.js"></script>
+        <script src="level/level3.js"></script>
     </head>
     <body>
 
     <script>
-
         var game;
         var triggerIndex;
-        var level = 0;
+        var level = 2;
         var player;
         var package;
         var finish;
         var didLoad = true;
-
         // Groups
         var grounds;
+        var obstacleG;
         var levers = [];
         var plates = [];
         var steps = [];
         var obstacles = [];
-
     window.onload = function() {
-
         game = new Phaser.Game(
             1200,
             600,
@@ -38,55 +36,44 @@
             '',
             { preload: preload, create: create, update: update, render: render }
         );
-
         var courser;
         var rain;
         var leftOrRightWalk = true //true == right
-
         function preload ()
         {
             //Background
             game.load.image('skybox', 'assets/skybox.png');
             game.load.image('ground', 'assets/ground.png');
-
+            game.load.image('wall10', 'assets/Wall_10.png');
             // Triggers
             game.load.image('lever', 'assets/lever.png');
             game.load.image('plate', 'assets/plate.png');
             game.load.image('finish', 'assets/finish.png');
-
             // Moveable
             game.load.spritesheet('player', 'assets/player_animation/PlayerCombined.png', 16, 35);
             game.load.image('package', 'assets/package.png');
-
             // Rain
             game.load.image('rain', 'assets/rain.png');
-
             // obstacles
             game.load.image('obstacle', 'assets/ground.png');
         }
-
         function create ()
         {
             game.physics.startSystem(Phaser.Physics.ARCADE);
-
             // create world bounds
             game.world.setBounds(0, 0, 2500, 600);
-
             // Sky
             var skybox = game.add.sprite(0, 0, 'skybox');
-
             // Rain
             rain();
-
             // Ground
             grounds = game.add.group();
+            obstacleG = game.add.group();
             grounds.enableBody = true;
-
+            obstacleG.enableBody = true;
             var ground = grounds.create(0, 550, 'ground');
             ground.body.immovable = true;
-
             build();
-
             player = game.add.sprite(0, 0, 'player');
             player.animations.add('walkLeft', [0, 1], 10, true);
             player.animations.add('walkRight', [4, 5], 10, true);
@@ -94,22 +81,18 @@
             player.animations.add('standRight', [3], 10, true);
             package = game.add.sprite(50, 0, 'package');
             courser = game.input.keyboard.createCursorKeys();
-
             game.physics.enable(player, Phaser.Physics.ARCADE);
             player.enableBody = true;
             player.body.collideWorldBounds = true;
             player.body.bounce.setTo(0.25, 0.25);
             player.body.gravity.y = 500;
-
             game.physics.enable(package, Phaser.Physics.ARCADE);
             package.enableBody = true;
             package.body.collideWorldBounds = true;
             package.body.bounce.setTo(1, 0.1);
             package.body.gravity.y = 500;
-
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
             game.input.keyboard.addKeyCapture([ Phaser.Keyboard.R ]);
-
             game.camera.follow(player);
         }
         //-------------------------------------------------------------------------------------
@@ -120,13 +103,9 @@
                 didLoad = true;
                 build();
             }
-
-
-
             var collision = game.physics.arcade.collide(player, grounds);
             var packCol = game.physics.arcade.collide(player, package);
             var packCol2 = game.physics.arcade.collide(package, grounds);
-
             //Player Movement
             player.body.move = false;
             if (courser.left.isDown)
@@ -151,20 +130,14 @@
                 player.animations.play('standLeft');
                 player.body.velocity.x = 0;
             }
-
-
-
-
             // player jumping
             if (courser.up.isDown && player.body.touching.down && (collision || packCol))
                 player.body.velocity.y = -250;
-
             // package slowing down on ground
             if (package.body.velocity.x < 0  && package.body.touching.down && packCol2)
                 package.body.velocity.x += 2.5;
             else if (package.body.velocity.x > 0  && package.body.touching.down && packCol2)
                 package.body.velocity.x -= 2.5;
-
             // package throw
             if (Phaser.Math.distance(player.x, player.y, package.x, package.y) <= 42 && player.body.touching.down && collision && !packCol && game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
             {
@@ -173,14 +146,11 @@
                     mod = -1;
                 else
                     mod = 1;
-
                 package.body.velocity.x = mod * 150;
                 package.body.velocity.y = -300;
             }
-
             // Rain
             rain.forEach(checkRain, this, true);
-
             // Triggers
             for (var i = 0; i < levers.length; i++)
             {
@@ -189,10 +159,15 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                        break;
+                    case 2:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler2, null, this);
+                        break;
+                    case 3:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler3, null, this);
+                        break;
                 }
-
             }
-
             for (var i = 0; i < plates.length; i++)
             {
                 triggerIndex = i;
@@ -200,14 +175,16 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                        break;
+                    case 2:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler2, null, this);
+                        break;
+                    case 3:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler3, null, this);
+                        break;
                 }
-
             }
-
-
             liftStep();
-
-
             // Reset
             if (game.input.keyboard.isDown(Phaser.Keyboard.R))
             {
@@ -215,30 +192,38 @@
                 {
                     case 0:
                         reset0();
+                        break;
+                    case 2:
+                        reset2();
+                        break;
+                    case 3:
+                        reset3();
+                        break;
                 }
             }
-
-
             // Completion Detection
             switch (level)
             {
                 case 0:
                     game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+                    break;
+                case 2:
+                    game.physics.arcade.overlap(finish, package, finishHandler2, null, this);
+                    break;
+                case 3:
+                    game.physics.arcade.overlap(finish, package, finishHandler3, null, this);
+                    break;
             }
-
         }
-
         function render()
         {
             game.debug.text("Press 'R' to restart", 32, 32);
         }
-
         function rain()
         {
             rain = game.add.group();
             game.time.events.loop(50, createSprite, this);
         }
-
         function createSprite()
         {
             var drop = rain.create(game.world.randomX, 0, 'rain');
@@ -247,21 +232,25 @@
             drop.body.velocity.y = 300;
             drop.body.velocity.x = -25;
         }
-
         function checkRain(drop)
         {
             if (drop.y > game.height)
                 rain.remove(drop, true);
         }
-
         function build()
         {
             switch (level)
             {
                 case 0:
                     buildWorld0();
+                    break;
+                case 2:
+                    buildWorld2();
+                    break;
+                case 3:
+                    buildWorld3();
+                    break;
             }
-
             for (var i = 0; i < obstacles.length; i++) {
                 if (obstacles[i] !== null) {
                     obstacles[i].body.immovable = true;
@@ -270,16 +259,13 @@
             for (var i = 0; i < steps.length; i++) {
                 steps[i][0].body.immovable = true;
             }
-
             for (var i = 0; i < levers.length; i++) {
                 game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
             }
-
             for (var i = 0; i < plates.length; i++) {
                 game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
             }
         }
-
         // function for lifting steps --- DO NOT EDIT
         function liftStep()
         {
@@ -293,9 +279,7 @@
                     }
             }
         }
-
     };
-
     </script>
 
     </body>
