@@ -204,11 +204,8 @@
 
             }
 
-            switch (level)
-            {
-                case 0:
-                    liftObstacle0();
-            }
+
+            liftStep();
 
 
             // Reset
@@ -279,6 +276,20 @@
 
             for (var i = 0; i < plates.length; i++) {
                 game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
+            }
+        }
+
+        // function for lifting steps --- DO NOT EDIT
+        function liftStep()
+        {
+            for (var i = 0; i < steps.length; i++)
+            {
+                if (steps[i][1] != null)
+                    if (steps[i][0].y <= steps[i][1])
+                    {
+                        steps[i][1] = null;
+                        steps[i][0].body.velocity.y = 0;
+                    }
             }
         }
 

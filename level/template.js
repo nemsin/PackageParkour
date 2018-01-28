@@ -37,20 +37,6 @@ function plateHandler()
     }
 }
 
-// function for lifting obstacles --- DO NOT EDIT
-function liftObstacle()
-{
-    for (var i = 0; i < steps.length; i++)
-    {
-        if (steps[i][1] != null)
-            if (steps[i][0].y <= steps[i][1])
-            {
-                steps[i][1] = null;
-                steps[i][0].body.velocity.y = 0;
-            }
-    }
-}
-
 function finishHandler()
 {
     // next level
