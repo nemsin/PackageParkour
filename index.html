@@ -16,7 +16,6 @@
 
         var game;
         var triggerIndex;
-        var hasFinished = true;
         var level = 0;
         var player;
         var package;
@@ -28,6 +27,7 @@
         var levers = [];
         var plates = [];
         var steps = [];
+        var obstacles = [];
 
     window.onload = function() {
 
@@ -60,6 +60,9 @@
 
             // Rain
             game.load.image('rain', 'assets/rain.png');
+
+            // obstacles
+            game.load.image('obstacle', 'assets/obstacle.jpg');
         }
 
         function create ()
@@ -262,14 +265,21 @@
                     buildWorld0();
             }
 
-            for (var i = 0; i < steps.length; i++)
+            for (var i = 0; i < obstacles.length; i++) {
+                obstacles[i][0].enableBody = true;
+                obstacles[i][0].body.immovable = true;
+            }
+            for (var i = 0; i < steps.length; i++) {
                 steps[i][0].body.immovable = true;
+            }
 
-            for (var i = 0; i < levers.length; i++)
+            for (var i = 0; i < levers.length; i++) {
                 game.physics.enable(levers[i][0], Phaser.Physics.ARCADE);
+            }
 
-            for (var i = 0; i < plates.length; i++)
+            for (var i = 0; i < plates.length; i++) {
                 game.physics.enable(plates[i][0], Phaser.Physics.ARCADE);
+            }
         }
 
     };
