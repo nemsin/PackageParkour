@@ -5,23 +5,23 @@ function buildWorld2()
     // creating the triggers (levers & plates)
 
     // creation of Steps & obstacles (liftable require physics, immovables don't)
-    obstacles[0] = obstacleG.create(250, 520, 'wall30');
+    obstacles[0] = grounds.create(250, 520, 'wall30');
 
-    obstacles[1] = obstacleG.create(150, 520, 'wall30');
+    obstacles[1] = grounds.create(150, 520, 'wall30');
     obstacles[1].scale.setTo(7, 0.025);
 
 
 
-    obstacles[2] = obstacleG.create(500, 500, 'wall30');
+    obstacles[2] = grounds.create(500, 500, 'wall30');
     obstacles[2].scale.setTo(3.5, 3);
 
-    obstacles[3] = obstacleG.create(600, 450, 'wall30');
+    obstacles[3] = grounds.create(600, 450, 'wall30');
     obstacles[3].scale.setTo(3.5, 3);
 
-    obstacles[4] = obstacleG.create(700, 400, 'wall30');
+    obstacles[4] = grounds.create(700, 400, 'wall30');
     obstacles[4].scale.setTo(3.5, 3);
 
-    obstacles[5] = obstacleG.create(800, 350, 'wall30');
+    obstacles[5] = grounds.create(800, 350, 'wall30');
     obstacles[5].scale.setTo(3.5, 3);
 
     // creation of the Finish (requires physics)
@@ -60,7 +60,7 @@ function plateHandler2()
 function finishHandler2()
 {
     // next level
-    level = 2; // change to the number of the next level
+    level = 3; // change to the number of the next level
 
     // destroy all existing steps & obstacles
 

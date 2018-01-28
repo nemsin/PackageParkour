@@ -67,7 +67,7 @@ function plateHandler0()
 
 function finishHandler0()
 {
-    level = 0;
+    level = 1;
     steps[0][0].destroy();
     steps[1][0].destroy();
     steps[2][0].destroy();

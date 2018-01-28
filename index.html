@@ -9,6 +9,9 @@
 
         <!-- Levels -->
         <script src="level/level0.js"></script>
+        <script src="level/level1.js"></script>
+        <script src="level/level2.js"></script>
+        <script src="level/level3.js"></script>
     </head>
     <body>
 
@@ -16,7 +19,7 @@
 
         var game;
         var triggerIndex;
-        var level = 0;
+        var level = 2;
         var player;
         var package;
         var finish;
@@ -28,6 +31,7 @@
         var plates = [];
         var steps = [];
         var obstacles = [];
+        var tree = [];
 
     window.onload = function() {
 
@@ -48,6 +52,9 @@
             //Background
             game.load.image('skybox', 'assets/skybox.png');
             game.load.image('ground', 'assets/ground.png');
+            game.load.image('wall10', 'assets/Wall_10.png');
+            game.load.image('wall30', 'assets/Wall_30.png');
+            game.load.image('tree', 'assets/Tree_1.png');
 
             // Triggers
             game.load.image('lever', 'assets/lever.png');
@@ -189,6 +196,16 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                        break;
+                    case 1:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler1, null, this);
+                        break;
+                    case 2:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler2, null, this);
+                        break;
+                    case 3:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler3, null, this);
+                        break;
                 }
 
             }
@@ -200,6 +217,16 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                        break;
+                    case 1:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler1, null, this);
+                        break;
+                    case 2:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler2, null, this);
+                        break;
+                    case 3:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler3, null, this);
+                        break;
                 }
 
             }
@@ -215,6 +242,16 @@
                 {
                     case 0:
                         reset0();
+                        break;
+                    case 1:
+                        reset1();
+                        break;
+                    case 2:
+                        reset2();
+                        break;
+                    case 3:
+                        reset3();
+                        break;
                 }
             }
 
@@ -224,6 +261,16 @@
             {
                 case 0:
                     game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+                    break;
+                case 1:
+                    game.physics.arcade.overlap(finish, package, finishHandler1, null, this);
+                    break;
+                case 2:
+                    game.physics.arcade.overlap(finish, package, finishHandler2, null, this);
+                    break;
+                case 3:
+                    game.physics.arcade.overlap(finish, package, finishHandler3, null, this);
+                    break;
             }
 
         }
@@ -260,6 +307,16 @@
             {
                 case 0:
                     buildWorld0();
+                    break;
+                case 1:
+                    buildWorld1();
+                    break;
+                case 2:
+                    buildWorld2();
+                    break;
+                case 3:
+                    buildWorld3();
+                    break;
             }
 
             for (var i = 0; i < obstacles.length; i++) {
