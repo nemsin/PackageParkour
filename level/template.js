@@ -1,27 +1,11 @@
 function buildWorld()
 {
-    // Triggers
-    levers[0] = [];
-    levers[0][0] = game.add.sprite(350, 425, 'lever');
-    levers[0][1] = false;
+    // creating the triggers (levers & plates)
 
-    //plates[0] = [];
-    //plates[0][0] = game.add.sprite(200, 545, 'plate');
-    //plates[0][1] = false;
+    // creation of Steps (liftable require physics, immovables don't)
 
-    //liftable obstacles require physics!!
-    obstacles[1] = [];
-    obstacles[1][0] = grounds.create(250, 550, 'ground');
-    //obstacles[1][0].scale.setTo(0.1, 1);
-    game.physics.enable(obstacles[1][0], Phaser.Physics.ARCADE);
+    // creation of the Finish (requires physics)
 
-    // Ground Test
-    obstacles[0] = [];
-    obstacles[0][0] = grounds.create(300, 475, 'ground');
-    obstacles[0][0].scale.setTo(1, 1.5);
-
-    // Finish
-    finish = game.add.sprite(1000, 450, 'finish');
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
@@ -33,8 +17,7 @@ function leverHandler()
         switch(triggerIndex)
         {
             case (0):
-                obstacles[1][1] = obstacles[1][0].y - 40;
-                obstacles[1][0].body.velocity.y = -10;
+                // DO STUFF HERE
         }
     }
 }
@@ -52,44 +35,47 @@ function plateHandler()
     }
 }
 
+// function for lifting obstacles --- DO NOT EDIT
 function liftObstacle()
 {
-    for (var i = 0; i < obstacles.length; i++)
+    for (var i = 0; i < steps.length; i++)
     {
-        if (obstacles[i][1] != null)
-            if (obstacles[i][0].y <= obstacles[i][1])
+        if (steps[i][1] != null)
+            if (steps[i][0].y <= steps[i][1])
             {
-                obstacles[i][1] = null;
-                obstacles[i][0].body.velocity.y = 0;
+                steps[i][1] = null;
+                steps[i][0].body.velocity.y = 0;
             }
     }
 }
 
 function finishHandler()
 {
-    level = 0;
-    obstacles[0][0].destroy();
-    obstacles[1][0].destroy();
-    levers[0][0].destroy();
+    // next level
+    level = 0; // change to the number of the next level
+
+    // destroy all existing steps & obstacles
+
+
+    // reset of the player & package
     player.x = 0;
     player.y = 0;
     player.body.velocity.x = 0;
     package.x = 20;
     package.y = 0;
     package.body.velocity.x = 0;
+
+    // reset didLoad, to allow loading the next level
     didLoad = false;
 }
 
 function reset()
 {
-    // Reset moveable
-    obstacles[1][0].x = 250;
-    obstacles[1][0].y = 550;
-    obstacles[1][0].body.velocity.y = 0;
-    obstacles[1][1] = null;
+    // reset all movable steps
 
-    levers[0][1] = false;
+    // reset levers & plates
 
+    // reset of the player and package
     player.x = 0;
     player.y = 0;
     player.body.velocity.x = 0;
