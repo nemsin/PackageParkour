@@ -9,6 +9,7 @@
 
         <!-- Levels -->
         <script src="level/level0.js"></script>
+        <script src="level/level2.js"></script>
     </head>
     <body>
 
@@ -16,7 +17,7 @@
 
         var game;
         var triggerIndex;
-        var level = 0;
+        var level = 2;
         var player;
         var package;
         var finish;
@@ -24,6 +25,7 @@
 
         // Groups
         var grounds;
+        var obstacleG;
         var levers = [];
         var plates = [];
         var steps = [];
@@ -48,6 +50,7 @@
             //Background
             game.load.image('skybox', 'assets/skybox.png');
             game.load.image('ground', 'assets/ground.png');
+            game.load.image('wall10', 'assets/Wall_10.png');
 
             // Triggers
             game.load.image('lever', 'assets/lever.png');
@@ -80,7 +83,9 @@
 
             // Ground
             grounds = game.add.group();
+            obstacleG = game.add.group();
             grounds.enableBody = true;
+            obstacleG.enableBody = true;
 
             var ground = grounds.create(0, 550, 'ground');
             ground.body.immovable = true;
@@ -189,6 +194,8 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                    case 2:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler2, null, this);
                 }
 
             }
@@ -200,6 +207,8 @@
                 {
                     case 0:
                         game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                    case 2:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler2, null, this);
                 }
 
             }
@@ -215,6 +224,10 @@
                 {
                     case 0:
                         reset0();
+                        break;
+                    case 2:
+                        reset2();
+                        break;
                 }
             }
 
@@ -224,6 +237,10 @@
             {
                 case 0:
                     game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+                    break;
+                case 2:
+                    game.physics.arcade.overlap(finish, package, finishHandler2, null, this);
+                    break;
             }
 
         }
@@ -260,6 +277,10 @@
             {
                 case 0:
                     buildWorld0();
+                    break;
+                case 2:
+                    buildWorld2();
+                    break;
             }
 
             for (var i = 0; i < obstacles.length; i++) {
