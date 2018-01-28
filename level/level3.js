@@ -1,4 +1,4 @@
-function buildWorld0()
+function buildWorld3()
 {
     // Triggers
     levers[0] = [];
@@ -11,7 +11,7 @@ function buildWorld0()
     plates[0][1] = false;
 
     // Wall
-    obstacles[0] = obstacleG.create(200, 420, 'Wall_10');
+    obstacles[0] = obstacleG.create(200, 420, 'Wall30');
     obstacles[0].scale.setTo(0.01, 1.5);
 
     // Finish
@@ -19,7 +19,7 @@ function buildWorld0()
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
-function leverHandler0()
+function leverHandler3()
 {
     if (!levers[triggerIndex][1])
     {
@@ -33,7 +33,7 @@ function leverHandler0()
     }
 }
 
-function plateHandler0()
+function plateHandler3()
 {
     if (!plates[triggerIndex][1])
     {
@@ -47,7 +47,7 @@ function plateHandler0()
     }
 }
 
-function finishHandler0()
+function finishHandler3()
 {
     level = 0;
     steps[0][0].destroy();
@@ -65,7 +65,7 @@ function finishHandler0()
     didLoad = false;
 }
 
-function reset0()
+function reset3()
 {
     steps[0][0].x = 450;
     steps[0][0].y = 550;
