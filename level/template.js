@@ -13,28 +13,30 @@ function buildWorld()
 
 function leverHandler()
 {
-    if (!levers[triggerIndex][1])
-    {
-        levers[triggerIndex][1] = true;
-        switch(triggerIndex)
+    if (levers[triggerIndex] != null)
+        if (!levers[triggerIndex][1])
         {
-            case (0):
-                // DO STUFF HERE
+            levers[triggerIndex][1] = true;
+            switch(triggerIndex)
+            {
+                case (0):
+                    // DO STUFF HERE
+            }
         }
-    }
 }
 
 function plateHandler()
 {
-    if (!plates[triggerIndex][1])
-    {
-        plates[triggerIndex][1] = true;
-        switch(triggerIndex)
+    if (levers[triggerIndex] != null)
+        if (!plates[triggerIndex][1])
         {
-            case (0):
-            // DO STUFF HERE
+            plates[triggerIndex][1] = true;
+            switch(triggerIndex)
+            {
+                case (0):
+                // DO STUFF HERE
+            }
         }
-    }
 }
 
 function finishHandler()

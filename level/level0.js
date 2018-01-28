@@ -37,30 +37,32 @@ function buildWorld0()
 
 function leverHandler0()
 {
-    if (!levers[triggerIndex][1])
-    {
-        levers[triggerIndex][1] = true;
-        switch(triggerIndex)
+    if (levers[triggerIndex] != null)
+        if (!levers[triggerIndex][1])
         {
-            case (0):
-                steps[0][1] = steps[0][0].y - 40;
-                steps[0][0].body.velocity.y = -10;
+            levers[triggerIndex][1] = true;
+            switch(triggerIndex)
+            {
+                case (0):
+                    steps[0][1] = steps[0][0].y - 40;
+                    steps[0][0].body.velocity.y = -10;
+            }
         }
-    }
 }
 
 function plateHandler0()
 {
-    if (!plates[triggerIndex][1])
-    {
-        plates[triggerIndex][1] = true;
-        switch(triggerIndex)
+    if (plates[triggerIndex] != null)
+        if (!plates[triggerIndex][1])
         {
-            case (0):
-                steps[2][1] = steps[2][0].y - 40;
-                steps[2][0].body.velocity.y = -10;
+            plates[triggerIndex][1] = true;
+            switch(triggerIndex)
+            {
+                case (0):
+                    steps[2][1] = steps[2][0].y - 40;
+                    steps[2][0].body.velocity.y = -10;
+            }
         }
-    }
 }
 
 function finishHandler0()
