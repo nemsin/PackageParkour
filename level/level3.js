@@ -2,16 +2,16 @@ function buildWorld3()
 {
     // Triggers
     levers[0] = [];
-    levers[0][0] = game.add.sprite(525, 425, 'lever');
+    levers[0][0] = game.add.sprite(525, 525, 'lever');
     levers[0][1] = false;
 
     plates[0] = [];
-    plates[0][0] = game.add.sprite(1503, 398, 'plate');
+    plates[0][0] = game.add.sprite(1503, 525, 'plate');
     plates[0][0].scale.setTo(3, 1);
     plates[0][1] = false;
 
     // Wall
-    obstacles[0] = obstacleG.create(200, 420, 'Wall30');
+    obstacles[0] = ground.create(200, 425, 'wall30');
     obstacles[0].scale.setTo(0.01, 1.5);
 
     // Finish
@@ -27,8 +27,8 @@ function leverHandler3()
         switch(triggerIndex)
         {
             case (0):
-                steps[0][1] = steps[0][0].y - 40;
-                steps[0][0].body.velocity.y = -10;
+                obstacles[triggerIndex] = obstacles[0].y - 40;
+                obstacles[0].body.velocity.y = -10;
         }
     }
 }
