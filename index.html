@@ -8,7 +8,7 @@
         <link rel="shortcut icon" type="image/png" href="Logo.png"/>
 
         <!-- Levels -->
-        <script src="level/level0.js"></script>
+        <script src="level/level1.js"></script>
     </head>
     <body>
 
@@ -16,7 +16,6 @@
 
         var game;
         var triggerIndex;
-        var hasFinished = true;
         var level = 0;
         var player;
         var package;
@@ -25,6 +24,7 @@
 
         // Groups
         var grounds;
+        var tree = [];
         var levers = [];
         var plates = [];
         var steps = [];
@@ -60,6 +60,7 @@
 
             // Rain
             game.load.image('rain', 'assets/rain.png');
+            game.load.image('tree', 'assets/Tree_1.png')
         }
 
         function create ()
@@ -185,7 +186,7 @@
                 switch (level)
                 {
                     case 0:
-                        game.physics.arcade.overlap(levers[i][0], player, leverHandler0, null, this);
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler1, null, this);
                 }
 
             }
@@ -196,7 +197,7 @@
                 switch (level)
                 {
                     case 0:
-                        game.physics.arcade.overlap(plates[i][0], package, plateHandler0, null, this);
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler1, null, this);
                 }
 
             }
@@ -204,7 +205,7 @@
             switch (level)
             {
                 case 0:
-                    liftObstacle0();
+                    liftObstacle1();
             }
 
 
@@ -214,7 +215,8 @@
                 switch (level)
                 {
                     case 0:
-                        reset0();
+                        reset1();
+                        break;
                 }
             }
 
@@ -223,7 +225,7 @@
             switch (level)
             {
                 case 0:
-                    game.physics.arcade.overlap(finish, package, finishHandler0, null, this);
+                    game.physics.arcade.overlap(finish, package, finishHandler1, null, this);
             }
 
         }
@@ -259,7 +261,7 @@
             switch (level)
             {
                 case 0:
-                    buildWorld0();
+                    buildWorld1();
             }
 
             for (var i = 0; i < steps.length; i++)
