@@ -1,3 +1,5 @@
+// Behind the name of every function is the index of the level required!
+// those have to be written into the switch cases in index
 function buildWorld()
 {
     // creating the triggers (levers & plates)
