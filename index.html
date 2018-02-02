@@ -20,11 +20,14 @@
 
         var game;
         var triggerIndex;
-        var level = 3;
+        var level = 0;
         var player;
         var package;
         var finish;
         var didLoad = true;
+
+        // Set last level to show end screen
+        var lastLevel = 4;
 
         // Groups
         var grounds;
@@ -292,7 +295,9 @@
 
         function render()
         {
-            game.debug.text("Press 'R' to restart", 32, 32);
+            game.debug.text("Press 'R' to restart", 32, 140);
+            game.debug.text("Press 'Spacebar' to kick the Packet", 32, 160);
+            game.debug.text("Use arrow keys to walk and jump", 32, 180);
         }
 
         function rain()
