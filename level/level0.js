@@ -31,7 +31,9 @@ function buildWorld0()
     steps[3][0].scale.setTo(1, 2);
 
     // Finish
-    finish = game.add.sprite(2475, 375, 'finish');
+    //finish = game.add.sprite(2475, 375, 'finish');
+    finish = game.add.sprite(2442, 357, 'finish2'); //x = 2442; y = -43
+    f = game.add.sprite(2325, 202, 'finish1'); //x = 2325; y = -198
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
@@ -72,14 +74,22 @@ function finishHandler0()
     steps[1][0].destroy();
     steps[2][0].destroy();
     steps[3][0].destroy();
+    steps = [];
+
     levers[0][0].destroy();
+    levers = [];
+
     plates[0][0].destroy();
+    plates = [];
+
     player.x = 0;
     player.y = 0;
     player.body.velocity.x = 0;
+
     package.x = 20;
     package.y = 0;
     package.body.velocity.x = 0;
+
     didLoad = false;
 }
 

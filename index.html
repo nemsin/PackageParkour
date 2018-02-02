@@ -12,6 +12,7 @@
         <script src="level/level1.js"></script>
         <script src="level/level2.js"></script>
         <script src="level/level3.js"></script>
+        <script src="level/level4.js"></script>
     </head>
     <body>
 
@@ -19,7 +20,7 @@
 
         var game;
         var triggerIndex;
-        var level = 2;
+        var level = 3;
         var player;
         var package;
         var finish;
@@ -59,6 +60,8 @@
             // Triggers
             game.load.image('lever', 'assets/lever.png');
             game.load.image('plate', 'assets/plate.png');
+            game.load.image('finish1', 'assets/Finish_Main.png');
+            game.load.image('finish2', 'assets/Finish_Wall.png');
             game.load.image('finish', 'assets/finish.png');
 
             // Moveable
@@ -99,7 +102,7 @@
             player.animations.add('walkRight', [4, 5], 10, true);
             player.animations.add('standLeft', [2], 10, true);
             player.animations.add('standRight', [3], 10, true);
-            package = game.add.sprite(50, 0, 'package');
+            package = game.add.sprite(20, 0, 'package');
             courser = game.input.keyboard.createCursorKeys();
 
             game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -206,6 +209,9 @@
                     case 3:
                         game.physics.arcade.overlap(levers[i][0], player, leverHandler3, null, this);
                         break;
+                    case 4:
+                        game.physics.arcade.overlap(levers[i][0], player, leverHandler4, null, this);
+                        break;
                 }
 
             }
@@ -226,6 +232,9 @@
                         break;
                     case 3:
                         game.physics.arcade.overlap(plates[i][0], package, plateHandler3, null, this);
+                        break;
+                    case 4:
+                        game.physics.arcade.overlap(plates[i][0], package, plateHandler4, null, this);
                         break;
                 }
 
@@ -252,6 +261,9 @@
                     case 3:
                         reset3();
                         break;
+                    case 4:
+                        reset4();
+                        break;
                 }
             }
 
@@ -270,6 +282,9 @@
                     break;
                 case 3:
                     game.physics.arcade.overlap(finish, package, finishHandler3, null, this);
+                    break;
+                case 4:
+                    game.physics.arcade.overlap(finish, package, finishHandler4, null, this);
                     break;
             }
 
@@ -316,6 +331,9 @@
                     break;
                 case 3:
                     buildWorld3();
+                    break;
+                case 4:
+                    buildWorld4();
                     break;
             }
 

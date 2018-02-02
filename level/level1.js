@@ -76,7 +76,8 @@ function buildWorld1()
     game.physics.enable(steps[7][0], Phaser.Physics.ARCADE);
 
     // Finish
-    finish = game.add.sprite(2000, 275, 'finish');
+    finish = game.add.sprite(2442, 258, 'finish2');
+    f = game.add.sprite(2325, 102, 'finish1');
     game.physics.enable(finish, Phaser.Physics.ARCADE);
 }
 
@@ -131,22 +132,30 @@ function liftObstacle1()
 
 function finishHandler1()
 {
-    level = 3;
+    level = 2;
     for (var i = 0; i < plates.length; i++) {
         plates[i][0].destroy();
     }
+    plates = [];
+
     for (var i = 0; i < steps.length; i++) {
         steps[i][0].destroy();
     }
+    steps = [];
+
     levers[0][0].destroy();
+    levers = [];
+
     finish.destroy();
 
     player.x = 0;
     player.y = 0;
     player.body.velocity.x = 0;
+
     package.x = 20;
     package.y = 0;
     package.body.velocity.x = 0;
+
     didLoad = false;
 }
 
@@ -155,7 +164,11 @@ function reset1()
     steps[0][0].x = 250;
     steps[0][0].y = 475;
     steps[0][0].body.velocity.y = 0;
-    steps[6][1] = null;
+    steps[0][1] = null;
+    steps[2][0].x = 400;
+    steps[2][0].y = 550;
+    steps[2][0].body.velocity.y = 0;
+    steps[2][1] = null;
     steps[4][0].x = 775;
     steps[4][0].y = 550;
     steps[4][0].body.velocity.y = 0;
